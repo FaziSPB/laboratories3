@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Checkstyle: check code (Maven)",
+      "detail": "mvn checkstyle:check - violations go to the Problems panel, the build fails if there are any",
+      "type": "shell",
+      "command": "mvn -B checkstyle:check",
+      "group": "test",
+      "presentation": { "reveal": "always", "clear": true },
+      "problemMatcher": {
+        "owner": "checkstyle",
+        "source": "Checkstyle",
+        "fileLocation": "absolute",
+        "severity": "warning",
+        "pattern": {
+          "regexp": "^\\[WARN\\]\\s+(.+?\\.java):(\\d+):(\\d+):\\s+(.*)\\s+\\[(\\w+)\\]$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4,
+          "code": 5
+        }
+      }
+    },
+    {
+      "label": "Checkstyle: generate report (Maven)",
+      "detail": "mvn checkstyle:checkstyle -> target/reports/checkstyle.html",
+      "type": "shell",
+      "command": "mvn checkstyle:checkstyle",
+      "problemMatcher": []
+    }
+  ]
+}

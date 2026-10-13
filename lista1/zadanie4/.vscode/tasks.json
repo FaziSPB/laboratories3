@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PMD: check code",
+      "detail": "Run PMD CLI and show violations in the Problems panel and in the editor",
+      "type": "shell",
+      "command": "pmd check --no-cache --no-progress --no-fail-on-violation -d src/main/java -R pmd-ruleset.xml -f text",
+      "group": "test",
+      "presentation": { "reveal": "always", "clear": true },
+      "problemMatcher": {
+        "owner": "pmd",
+        "source": "PMD",
+        "fileLocation": ["autoDetect", "${workspaceFolder}"],
+        "severity": "warning",
+        "pattern": {
+          "regexp": "^(.+?\\.java):(\\d+):\\s+(\\w+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "code": 3,
+          "message": 4
+        }
+      }
+    },
+    {
+      "label": "PMD: generate report (Maven)",
+      "detail": "mvn pmd:pmd -> target/reports/pmd.html",
+      "type": "shell",
+      "command": "mvn pmd:pmd",
+      "problemMatcher": []
+    },
+    {
+      "label": "PMD: check build (Maven)",
+      "detail": "mvn pmd:check - fails the build when there are violations",
+      "type": "shell",
+      "command": "mvn pmd:check",
+      "problemMatcher": []
+    }
+  ]
+}
