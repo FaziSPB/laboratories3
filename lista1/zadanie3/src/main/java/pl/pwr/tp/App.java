@@ -3,7 +3,7 @@ package pl.pwr.tp;
 public class App {
 
     public static void main(String[] args) {
-        Greeter greeter = new Greeter("Hello");
+        Greeter greeter = new Greeter("konflikt!!");
         if (args.length == 0) {
             System.out.println(greeter.greet("World"));
             return;
