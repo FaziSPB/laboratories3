@@ -2,20 +2,11 @@ package pl.pwr.tp.shop;
 
 import java.math.BigDecimal;
 
-/**
- * Console demo: fills the inventory, places two orders and shows what happens
- * when a product runs out.
- */
 public final class App {
 
     private App() {
     }
 
-    /**
-     * Runs the demo.
-     *
-     * @param args not used
-     */
     public static void main(String[] args) {
         Product keyboard = new Product("KB-01", "Keyboard", new BigDecimal("149.99"));
         Product mouse = new Product("MS-02", "Mouse", new BigDecimal("59.90"));
