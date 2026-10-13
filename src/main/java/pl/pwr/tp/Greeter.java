@@ -1,6 +1,5 @@
 package pl.pwr.tp;
 
-/** Builds greeting messages. */
 public class Greeter {
 
     private final String greeting;

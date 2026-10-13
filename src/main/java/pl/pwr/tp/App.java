@@ -1,6 +1,5 @@
 package pl.pwr.tp;
 
-/** Entry point: prints a greeting for each command-line argument. */
 public class App {
 
     public static void main(String[] args) {
