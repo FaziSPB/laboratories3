@@ -58,9 +58,9 @@
     },
     {
       "label": "Run application",
-      "detail": "java -jar target/shop.jar (run the verify task first)",
+      "detail": "java -jar target/football.jar (run the verify task first)",
       "type": "shell",
-      "command": "java -jar target/shop.jar",
+      "command": "java -jar target/football.jar",
       "problemMatcher": []
     },
     {

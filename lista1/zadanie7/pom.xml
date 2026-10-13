@@ -25,7 +25,7 @@
   </dependencies>
 
   <build>
-    <finalName>shop</finalName>
+    <finalName>football</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -41,7 +41,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>pl.pwr.tp.shop.App</mainClass>
+              <mainClass>pl.pwr.tp.football.League</mainClass>
             </manifest>
           </archive>
         </configuration>

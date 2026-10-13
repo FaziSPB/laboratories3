@@ -1,22 +1,22 @@
-# Task 7 – Shop application
+# Task 7 – Football league
 
-A small console shop written in Java. It brings together all the tools from list 1:
+A minimal Java application with three classes that shows Maven, Git, PMD, Checkstyle and UML.
 
-| Tool       | Where it is used                                                              |
-|------------|-------------------------------------------------------------------------------|
-| Maven      | `pom.xml` – build, JUnit 5 tests, executable jar, Checkstyle and PMD plugins  |
-| Git        | the project is a Git repository, pushed to GitHub                             |
-| PMD        | `pmd-ruleset.xml`, `pmd:check` bound to the `verify` phase                    |
-| Checkstyle | `checkstyle.xml`, `checkstyle:check` bound to the `validate` phase            |
-| UML        | Mermaid class and sequence diagrams below                                     |
+## Classes
 
-## How it works
+- `Team` – a team name and its points.
+- `Match` – two teams and the score; `play()` gives 3 points for a win, 1 each for a draw.
+- `League` – a list of teams, plays matches, returns the table sorted by points; has `main`.
 
-`Inventory` keeps products and their stock. A customer fills a `ShoppingCart`,
-and `Shop.checkout()` turns the cart into an `Order`: it checks that every product
-is in stock (otherwise nothing is taken and `OutOfStockException` is thrown), removes
-the units from the inventory and applies a `DiscountPolicy`. `ThresholdDiscount`
-gives a percentage off when the total reaches a threshold.
+## Tools
+
+| Tool       | Where                                                                |
+|------------|----------------------------------------------------------------------|
+| Maven      | `pom.xml` – build, JUnit tests, executable jar, Checkstyle and PMD   |
+| Git        | part of the `laboratories3` repository on GitHub                     |
+| Checkstyle | `checkstyle.xml`, runs in the `validate` phase                       |
+| PMD        | `pmd-ruleset.xml`, runs in the `verify` phase                        |
+| UML        | Mermaid diagrams below                                               |
 
 ## Build and run
 
@@ -24,160 +24,65 @@ gives a percentage off when the total reaches a threshold.
 mvn verify
 ```
 
-`verify` compiles the code, runs the tests, Checkstyle (validate phase) and PMD
-(verify phase). The build fails on any style error or PMD violation.
-
 ```bash
-java -jar target/shop.jar
+java -jar target/football.jar
 ```
 
-Reports:
-
-```bash
-mvn checkstyle:checkstyle pmd:pmd
-```
-
-They are written to `target/reports/checkstyle.html` and `target/reports/pmd.html`.
-
-In VS Code the same commands are available under *Terminal → Run Task*
-(`.vscode/tasks.json`); Checkstyle and PMD violations go to the Problems panel.
-
-## PMD findings fixed during development
-
-The first `mvn verify` reported 52 PMD violations. Fixed in code:
-
-- `AvoidFieldNameMatchingMethodName` – fields `items`, `products`, `orders` had the same
-  names as their getters, renamed to `itemsBySku`, `productsBySku`, `placedOrders`.
-- `AvoidLiteralsInIfCondition` – `quantity < 1` changed to `quantity <= 0`.
-- `CloseResource` – a `PrintStream` wrapping `System.out` was never closed, removed.
-
-Disabled in `pmd-ruleset.xml` (with a comment for each): `MethodArgumentCouldBeFinal`,
-`LocalVariableCouldBeFinal`, `ShortClassName`, `UseConcurrentHashMap`.
+`mvn verify` fails if a test fails, or if Checkstyle or PMD finds a problem.
+For example, removing the braces around an `if` in `Match.play()` breaks the
+Checkstyle rule `NeedBraces`.
 
 ## Class diagram
 
 ```mermaid
 classDiagram
-    direction LR
+    class Team {
+        -String name
+        -int points
+        +addPoints(value: int) void
+        +getName() String
+        +getPoints() int
+    }
 
-    class App {
+    class Match {
+        -Team home
+        -Team away
+        -int homeGoals
+        -int awayGoals
+        +play() void
+        +toString() String
+    }
+
+    class League {
+        -List~Team~ teams
+        +addTeam(team: Team) void
+        +play(match: Match) void
+        +getTable() List~Team~
         +main(args: String[])$ void
     }
 
-    class Product {
-        <<record>>
-        +String sku
-        +String name
-        +BigDecimal price
-    }
-
-    class CartItem {
-        <<record>>
-        +Product product
-        +int quantity
-        +subtotal() BigDecimal
-    }
-
-    class Inventory {
-        -Map~String, Product~ productsBySku
-        -Map~String, Integer~ stockBySku
-        +addStock(product: Product, quantity: int) void
-        +find(sku: String) Optional~Product~
-        +available(sku: String) int
-        +take(sku: String, quantity: int) void
-        +products() Collection~Product~
-    }
-
-    class ShoppingCart {
-        -Map~String, CartItem~ itemsBySku
-        +add(product: Product, quantity: int) void
-        +remove(sku: String) void
-        +items() List~CartItem~
-        +total() BigDecimal
-        +isEmpty() boolean
-        +clear() void
-    }
-
-    class Shop {
-        -Inventory inventory
-        -DiscountPolicy discountPolicy
-        -List~Order~ placedOrders
-        +checkout(cart: ShoppingCart) Order
-        +orders() List~Order~
-    }
-
-    class Order {
-        <<record>>
-        +int number
-        +List~CartItem~ items
-        +BigDecimal subtotal
-        +BigDecimal discount
-        +total() BigDecimal
-    }
-
-    class DiscountPolicy {
-        <<interface>>
-        +NONE$ DiscountPolicy
-        +discountFor(total: BigDecimal) BigDecimal
-    }
-
-    class ThresholdDiscount {
-        -BigDecimal threshold
-        -BigDecimal percent
-        +discountFor(total: BigDecimal) BigDecimal
-    }
-
-    class OutOfStockException {
-        +OutOfStockException(sku: String, requested: int, available: int)
-    }
-
-    RuntimeException <|-- OutOfStockException
-    DiscountPolicy <|.. ThresholdDiscount
-    Shop o-- Inventory
-    Shop o-- DiscountPolicy
-    Shop *-- "0..*" Order : placedOrders
-    ShoppingCart *-- "0..*" CartItem
-    Order *-- "1..*" CartItem
-    CartItem --> Product
-    Inventory o-- "0..*" Product
-    Shop ..> ShoppingCart : checks out
-    Shop ..> OutOfStockException : throws
-    Inventory ..> OutOfStockException : throws
-    App ..> Shop : uses
+    League o-- "0..*" Team
+    League ..> Match : plays
+    Match --> "2" Team
 ```
 
-## Sequence diagram – checkout
+## Sequence diagram
 
 ```mermaid
 sequenceDiagram
-    actor Customer
-    participant Cart as ShoppingCart
-    participant Shop
-    participant Inv as Inventory
-    participant Policy as DiscountPolicy
+    participant League
+    participant Match
+    participant Home as Team (home)
+    participant Away as Team (away)
 
-    Customer->>Cart: add(product, quantity)
-    Customer->>Shop: checkout(cart)
-    Shop->>Cart: items()
-    Cart-->>Shop: List<CartItem>
-
-    loop every item
-        Shop->>Inv: available(sku)
-        Inv-->>Shop: units in stock
+    League->>Match: play()
+    alt home wins
+        Match->>Home: addPoints(3)
+    else away wins
+        Match->>Away: addPoints(3)
+    else draw
+        Match->>Home: addPoints(1)
+        Match->>Away: addPoints(1)
     end
-
-    alt not enough units
-        Shop-->>Customer: OutOfStockException
-    else all in stock
-        loop every item
-            Shop->>Inv: take(sku, quantity)
-        end
-        Shop->>Cart: total()
-        Cart-->>Shop: subtotal
-        Shop->>Policy: discountFor(subtotal)
-        Policy-->>Shop: discount
-        Shop->>Shop: new Order(...)
-        Shop->>Cart: clear()
-        Shop-->>Customer: Order
-    end
+    League->>League: getTable()
 ```
