@@ -65,24 +65,3 @@ classDiagram
     League ..> Match : plays
     Match --> "2" Team
 ```
-
-## Sequence diagram
-
-```mermaid
-sequenceDiagram
-    participant League
-    participant Match
-    participant Home as Team (home)
-    participant Away as Team (away)
-
-    League->>Match: play()
-    alt home wins
-        Match->>Home: addPoints(3)
-    else away wins
-        Match->>Away: addPoints(3)
-    else draw
-        Match->>Home: addPoints(1)
-        Match->>Away: addPoints(1)
-    end
-    League->>League: getTable()
-```

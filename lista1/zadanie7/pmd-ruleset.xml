@@ -4,10 +4,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
-    <description>Rules used in the lab (equivalent of Window -> Preferences -> PMD -> Rules in Eclipse).</description>
+    <description>Rules</description>
 
     <rule ref="category/java/bestpractices.xml">
-        <!-- Too strict for a console demo app -->
         <exclude name="SystemPrintln"/>
     </rule>
     <rule ref="category/java/codestyle.xml">
@@ -15,22 +14,18 @@
         <exclude name="OnlyOneReturn"/>
         <exclude name="LongVariable"/>
         <exclude name="ShortVariable"/>
-        <!-- "final" on every parameter and local variable only adds noise -->
         <exclude name="MethodArgumentCouldBeFinal"/>
         <exclude name="LocalVariableCouldBeFinal"/>
-        <!-- Short domain names like Shop, App, Order are fine here -->
         <exclude name="ShortClassName"/>
     </rule>
     <rule ref="category/java/design.xml">
         <exclude name="LawOfDemeter"/>
-        <!-- Needs a list of packages to work, otherwise only prints a warning -->
         <exclude name="LoosePackageCoupling"/>
     </rule>
     <rule ref="category/java/errorprone.xml"/>
     <rule ref="category/java/performance.xml"/>
     <rule ref="category/java/security.xml"/>
     <rule ref="category/java/multithreading.xml">
-        <!-- The application is single-threaded -->
         <exclude name="UseConcurrentHashMap"/>
     </rule>
 </ruleset>

@@ -78,29 +78,6 @@ classDiagram
     Loan "0..*" --> "1" Item : concerns
 ```
 
-## Sequence diagram
-
-Borrowing a book.
-
-```mermaid
-sequenceDiagram
-    actor U as User
-    participant L as Library
-    participant B as Book
-    participant M as Member
-
-    U->>L: findByTitle("Solaris")
-    L-->>U: [book]
-    U->>B: borrow(member)
-    B->>B: isAvailable()
-    alt available
-        B->>M: add Loan
-        B-->>U: ok
-    else already borrowed
-        B-->>U: exception
-    end
-```
-
 ## Notation cheat sheet
 
 | Mermaid | UML meaning |
