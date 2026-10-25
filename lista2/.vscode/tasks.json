@@ -1,0 +1,74 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Maven: verify (tests + Checkstyle + PMD)",
+      "detail": "mvn verify - the build fails on test failures, style errors or PMD violations (Checkstyle errors go to the Problems panel)",
+      "type": "shell",
+      "command": "mvn -B verify",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "clear": true
+      },
+      "problemMatcher": {
+        "owner": "checkstyle",
+        "source": "Checkstyle",
+        "fileLocation": "absolute",
+        "severity": "warning",
+        "pattern": {
+          "regexp": "^\\[WARN\\]\\s+(.+?\\.java):(\\d+):(\\d+):\\s+(.*)\\s+\\[(\\w+)\\]$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4,
+          "code": 5
+        }
+      }
+    },
+    {
+      "label": "PMD: check code",
+      "detail": "Run PMD CLI and show violations in the Problems panel and in the editor",
+      "type": "shell",
+      "command": "pmd check --no-cache --no-progress --no-fail-on-violation -d src/main/java -R pmd-ruleset.xml -f text",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "clear": true
+      },
+      "problemMatcher": {
+        "owner": "pmd",
+        "source": "PMD",
+        "fileLocation": [
+          "autoDetect",
+          "${workspaceFolder}"
+        ],
+        "severity": "warning",
+        "pattern": {
+          "regexp": "^(.+?\\.java):(\\d+):\\s+(\\w+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "code": 3,
+          "message": 4
+        }
+      }
+    },
+    {
+      "label": "Run application",
+      "detail": "java -jar target/library.jar (run the verify task first)",
+      "type": "shell",
+      "command": "java -jar target/library.jar",
+      "problemMatcher": []
+    },
+    {
+      "label": "Reports: Checkstyle + PMD",
+      "detail": "target/reports/checkstyle.html and target/reports/pmd.html",
+      "type": "shell",
+      "command": "mvn checkstyle:checkstyle pmd:pmd",
+      "problemMatcher": []
+    }
+  ]
+}
