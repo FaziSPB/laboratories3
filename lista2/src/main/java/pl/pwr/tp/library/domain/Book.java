@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 // GRASP Creator: a book aggregates its copies, so it creates them.
-// GRASP Information Expert: it holds the copy list, so it answers questions about its copies.
+// GRASP Information Expert: it holds the copy list, so it finds an available copy.
 public class Book {
 
     private final int id;
@@ -21,7 +21,7 @@ public class Book {
     }
 
     public Copy addCopy() {
-        Copy copy = new Copy(this, copies.size() + 1);
+        Copy copy = new Copy(copies.size() + 1);
         copies.add(copy);
         return copy;
     }
@@ -30,28 +30,12 @@ public class Book {
         return copies.stream().filter(Copy::isAvailable).findFirst();
     }
 
-    public List<Copy> copiesBorrowedBy(Reader reader) {
-        return copies.stream().filter(copy -> copy.isBorrowedBy(reader)).toList();
-    }
-
-    public long availableCount() {
-        return copies.stream().filter(Copy::isAvailable).count();
-    }
-
-    public boolean hasTitle(String other) {
-        return title.equalsIgnoreCase(other.strip());
-    }
-
     public int getId() {
         return id;
     }
 
     public String getTitle() {
         return title;
-    }
-
-    public String getAuthor() {
-        return author;
     }
 
     public List<Copy> getCopies() {

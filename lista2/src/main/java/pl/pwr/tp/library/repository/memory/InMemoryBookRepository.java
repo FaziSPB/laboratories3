@@ -31,7 +31,7 @@ public class InMemoryBookRepository implements BookRepository {
 
     @Override
     public Optional<Book> findByTitle(String title) {
-        return books.values().stream().filter(book -> book.hasTitle(title)).findFirst();
+        return books.values().stream().filter(book -> book.getTitle().equals(title)).findFirst();
     }
 
     @Override

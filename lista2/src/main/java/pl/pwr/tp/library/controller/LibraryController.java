@@ -21,10 +21,7 @@ public class LibraryController {
     }
 
     public Book addBook(String title, String author) {
-        if (books.findByTitle(title).isPresent()) {
-            throw new IllegalArgumentException("Title \"" + title + "\" already exists");
-        }
-        Book book = new Book(books.nextId(), title.strip(), author.strip());
+        Book book = new Book(books.nextId(), title, author);
         books.save(book);
         return book;
     }
@@ -41,7 +38,7 @@ public class LibraryController {
     }
 
     public Reader addReader(String name) {
-        Reader reader = new Reader(readers.nextId(), name.strip());
+        Reader reader = new Reader(readers.nextId(), name);
         readers.save(reader);
         return reader;
     }
@@ -50,20 +47,8 @@ public class LibraryController {
         Reader reader = reader(readerId);
         Book book = book(bookId);
         Copy copy = book.findAvailableCopy().orElseThrow(
-                () -> new IllegalStateException("No available copy of \""
-                        + book.getTitle() + "\""));
+                () -> new IllegalStateException("No available copy of " + book.getTitle()));
         copy.lendTo(reader);
-        books.save(book);
-        return copy;
-    }
-
-    public Copy giveBack(int readerId, int bookId) {
-        Reader reader = reader(readerId);
-        Book book = book(bookId);
-        Copy copy = book.copiesBorrowedBy(reader).stream().findFirst().orElseThrow(
-                () -> new IllegalStateException(reader.name() + " has no copy of \""
-                        + book.getTitle() + "\""));
-        copy.giveBack();
         books.save(book);
         return copy;
     }
@@ -74,13 +59,6 @@ public class LibraryController {
 
     public List<Reader> getReaders() {
         return readers.findAll();
-    }
-
-    public List<Copy> getLoans(int readerId) {
-        Reader reader = reader(readerId);
-        return books.findAll().stream()
-                .flatMap(book -> book.copiesBorrowedBy(reader).stream())
-                .toList();
     }
 
     private Book book(int id) {

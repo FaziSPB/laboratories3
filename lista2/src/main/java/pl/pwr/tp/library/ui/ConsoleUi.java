@@ -1,13 +1,10 @@
 package pl.pwr.tp.library.ui;
 
 import java.io.PrintStream;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 import pl.pwr.tp.library.controller.LibraryController;
 import pl.pwr.tp.library.domain.Book;
 import pl.pwr.tp.library.domain.Copy;
-import pl.pwr.tp.library.domain.Reader;
 
 // GRASP Pure Fabrication: console input and output kept out of the domain and the controller.
 public class ConsoleUi {
@@ -18,10 +15,10 @@ public class ConsoleUi {
             2. Add copy
             3. Add reader
             4. Lend a copy
-            5. Return a copy
-            6. List titles and copies
-            7. List readers and loans
-            0. Exit""";
+            5. List titles and copies
+            6. List readers
+            0. Exit
+            Choice:\s""";
 
     private final LibraryController library;
     private final Scanner in;
@@ -34,14 +31,10 @@ public class ConsoleUi {
     }
 
     public void run() {
-        try {
-            String choice = readText(MENU + "\nChoice: ");
-            while (!"0".equals(choice)) {
-                execute(choice);
-                choice = readText(MENU + "\nChoice: ");
-            }
-        } catch (NoSuchElementException e) {
-            out.println();
+        String choice = readText(MENU);
+        while (!"0".equals(choice)) {
+            execute(choice);
+            choice = readText(MENU);
         }
     }
 
@@ -52,14 +45,10 @@ public class ConsoleUi {
                         readText("Title: "), readText("Author: ")));
                 case "2" -> addCopy();
                 case "3" -> out.println("Added reader " + library.addReader(readText("Name: ")));
-                case "4" -> {
-                    Copy copy = library.lend(readNumber("Reader id: "), readNumber("Book id: "));
-                    out.println("Lent " + copy + " to " + copy.getBorrower().orElseThrow().name());
-                }
-                case "5" -> out.println("Returned " + library.giveBack(
-                        readNumber("Reader id: "), readNumber("Book id: ")));
-                case "6" -> listBooks();
-                case "7" -> listReaders();
+                case "4" -> out.println("Lent copy #" + library.lend(
+                        readNumber("Reader id: "), readNumber("Book id: ")).getNumber());
+                case "5" -> listBooks();
+                case "6" -> library.getReaders().forEach(out::println);
                 default -> out.println("Unknown option");
             }
         } catch (IllegalArgumentException | IllegalStateException e) {
@@ -69,22 +58,14 @@ public class ConsoleUi {
 
     private void addCopy() {
         String title = readText("Title: ");
-        Book book = library.findBook(title).orElseGet(() -> {
-            out.println("Title not found, adding it.");
-            Book added = library.addBook(title, readText("Author: "));
-            out.println("Added title " + added);
-            return added;
-        });
-        out.println("Added copy " + library.addCopy(book.getId()));
+        Book book = library.findBook(title)
+                .orElseGet(() -> library.addBook(title, readText("New title, author: ")));
+        out.println("Added copy #" + library.addCopy(book.getId()).getNumber() + " of " + book);
     }
 
     private void listBooks() {
-        if (library.getBooks().isEmpty()) {
-            out.println("No titles");
-        }
         for (Book book : library.getBooks()) {
-            out.println(book + " - copies: " + book.getCopies().size()
-                    + ", available: " + book.availableCount());
+            out.println(book);
             for (Copy copy : book.getCopies()) {
                 String state = copy.getBorrower()
                         .map(reader -> "lent to " + reader)
@@ -94,34 +75,12 @@ public class ConsoleUi {
         }
     }
 
-    private void listReaders() {
-        if (library.getReaders().isEmpty()) {
-            out.println("No readers");
-        }
-        for (Reader reader : library.getReaders()) {
-            String loans = library.getLoans(reader.id()).stream()
-                    .map(Copy::toString)
-                    .collect(Collectors.joining(", "));
-            out.println(reader + " - loans: " + (loans.isEmpty() ? "none" : loans));
-        }
-    }
-
     private String readText(String prompt) {
-        String text = "";
-        while (text.isEmpty()) {
-            out.print(prompt);
-            text = in.nextLine().strip();
-        }
-        return text;
+        out.print(prompt);
+        return in.nextLine();
     }
 
     private int readNumber(String prompt) {
-        while (true) {
-            try {
-                return Integer.parseInt(readText(prompt));
-            } catch (NumberFormatException e) {
-                out.println("Please enter a number");
-            }
-        }
+        return Integer.parseInt(readText(prompt));
     }
 }
