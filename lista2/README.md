@@ -1,12 +1,3 @@
-# List 2 – Book lending
-
-Technologie programowania 2026, list 2 (TPLab02), task 1.
-
-A console application for a small library. A librarian adds book titles, copies of a title
-and readers, lends copies to readers and lists them. Data is kept in memory only, but the
-storage sits behind interfaces, so a database can be added without touching the domain,
-the controller or the UI.
-
 ## Build and run
 
 ```bash
@@ -20,7 +11,7 @@ java -jar target/library.jar
 `mvn verify` runs Checkstyle (`validate` phase), the JUnit tests and PMD (`verify` phase).
 The build fails on a failing test, a Checkstyle warning or a PMD violation.
 
-Example session (menu omitted):
+Example session:
 
 ```text
 Choice: 2
@@ -135,8 +126,6 @@ classDiagram
 
 ## Use case diagram
 
-Mermaid has no use case diagram type, so this is a flowchart drawn in the same notation:
-an actor, the system boundary and use cases as ovals.
 
 ```mermaid
 flowchart LR
@@ -239,8 +228,6 @@ Common to all: the application shows the main menu and returns to it after each 
 
 ## GRASP
 
-Each class has a one-line comment in the code naming the principle it follows. In detail:
-
 | Principle | Where | Why |
 |-----------|-------|-----|
 | Information Expert | `Copy` | It holds the borrower, so it knows whether it is available. |
@@ -258,15 +245,11 @@ the concrete classes.
 
 ## Adding a database
 
-Nothing below is implemented; it shows where a database would go.
-
 1. Add a JDBC driver (for example `org.postgresql:postgresql`) to `pom.xml`.
 2. Create a package `repository/jdbc` with `JdbcBookRepository implements BookRepository` and
    `JdbcReaderRepository implements ReaderRepository`.
 3. In `App`, pass the JDBC repositories to `LibraryController` instead of the in-memory ones.
 
-The domain, the controller and the UI stay unchanged. Ids come from `nextId()`, which maps to
-a database sequence, and the controller already calls `save` after every change.
 
 A possible schema:
 
