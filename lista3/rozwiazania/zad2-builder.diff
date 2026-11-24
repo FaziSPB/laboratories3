@@ -50,36 +50,26 @@ diff --git a/lista3/builder/src/main/java/eu/jpereira/trainings/designpatterns/c
 index 66a1c4c..7a1c93d 100644
 --- a/lista3/builder/src/main/java/eu/jpereira/trainings/designpatterns/creational/builder/ReportAssembler.java
 +++ b/lista3/builder/src/main/java/eu/jpereira/trainings/designpatterns/creational/builder/ReportAssembler.java
-@@ -15,120 +15,26 @@
-  */
- package eu.jpereira.trainings.designpatterns.creational.builder;
- 
+@@ -18,3 +17,0 @@ package eu.jpereira.trainings.designpatterns.creational.builder;
 -import java.util.Iterator;
 -
 -import eu.jpereira.trainings.designpatterns.creational.builder.json.JSONReportBody;
- import eu.jpereira.trainings.designpatterns.creational.builder.model.Report;
+@@ -21,0 +19 @@ import eu.jpereira.trainings.designpatterns.creational.builder.model.Report;
 +import eu.jpereira.trainings.designpatterns.creational.builder.model.ReportBodyBuilder;
- import eu.jpereira.trainings.designpatterns.creational.builder.model.SaleEntry;
+@@ -23,2 +20,0 @@ import eu.jpereira.trainings.designpatterns.creational.builder.model.SaleEntry;
 -import eu.jpereira.trainings.designpatterns.creational.builder.model.SoldItem;
 -import eu.jpereira.trainings.designpatterns.creational.builder.xml.XMLReportBody;
- 
- /**
+@@ -27,2 +23 @@ import eu.jpereira.trainings.designpatterns.creational.builder.xml.XMLReportBody
 - * @author jpereira
 - * 
 + * Director: drives a ReportBodyBuilder without knowing the concrete format.
-  */
- public class ReportAssembler {
- 
- 	private SaleEntry saleEntry;
- 
+@@ -34,3 +28,0 @@ public class ReportAssembler {
 -	/**
 -	 * @param reportDate
 -	 */
- 	public void setSaleEntry(SaleEntry saleEntry) {
- 		this.saleEntry = saleEntry;
+@@ -39 +30,0 @@ public class ReportAssembler {
 -
- 	}
- 
+@@ -42,5 +33,3 @@ public class ReportAssembler {
 -	/**
 -	 * @param type
 -	 * @return
@@ -88,7 +78,7 @@ index 66a1c4c..7a1c93d 100644
 +	public Report getReport(ReportBodyBuilder builder) {
 +		builder.buildCustomer(saleEntry.getCustomer());
 +		builder.buildItems(saleEntry.getSoldItems());
- 		Report report = new Report();
+@@ -48,83 +37 @@ public class ReportAssembler {
 -
 -		// Algorithms to build the body objects are different
 -		if (type.equals("JSON")) {
@@ -173,10 +163,8 @@ index 66a1c4c..7a1c93d 100644
 -		}
 -
 +		report.setReportBody(builder.getReportBody());
- 		return report;
- 	}
+@@ -133 +39,0 @@ public class ReportAssembler {
 -
- }
 diff --git a/lista3/builder/src/main/java/eu/jpereira/trainings/designpatterns/creational/builder/json/JSONReportBodyBuilder.java b/lista3/builder/src/main/java/eu/jpereira/trainings/designpatterns/creational/builder/json/JSONReportBodyBuilder.java
 new file mode 100644
 index 0000000..166f2e8
@@ -305,43 +293,16 @@ diff --git a/lista3/builder/src/test/java/eu/jpereira/trainings/designpatterns/c
 index d5a63f4..43ac99b 100644
 --- a/lista3/builder/src/test/java/eu/jpereira/trainings/designpatterns/creational/builder/ReportAssemblerTest.java
 +++ b/lista3/builder/src/test/java/eu/jpereira/trainings/designpatterns/creational/builder/ReportAssemblerTest.java
-@@ -19,10 +19,12 @@ import static org.junit.Assert.assertEquals;
- 
- import org.junit.Test;
- 
+@@ -21,0 +22 @@ import org.junit.Test;
 +import eu.jpereira.trainings.designpatterns.creational.builder.json.JSONReportBodyBuilder;
- import eu.jpereira.trainings.designpatterns.creational.builder.model.Customer;
- import eu.jpereira.trainings.designpatterns.creational.builder.model.Report;
- import eu.jpereira.trainings.designpatterns.creational.builder.model.SaleEntry;
- import eu.jpereira.trainings.designpatterns.creational.builder.model.SoldItem;
+@@ -25,0 +27 @@ import eu.jpereira.trainings.designpatterns.creational.builder.model.SoldItem;
 +import eu.jpereira.trainings.designpatterns.creational.builder.xml.XMLReportBodyBuilder;
- 
- /**
-  * @author jpereira
-@@ -36,7 +38,7 @@ public class ReportAssemblerTest {
- 		ReportAssembler assembler = new ReportAssembler();
- 
- 		assembler.setSaleEntry(createDummySaleEntry());
+@@ -39 +41 @@ public class ReportAssemblerTest {
 -		Report report = assembler.getReport("JSON");
 +		Report report = assembler.getReport(new JSONReportBodyBuilder());
- 		String expected = "sale:{customer:{name:\"Bob\",phone:\"1232232\"},items:[{name:\"Computer\",quantity:2,price:99.9},{name:\"Printer\",quantity:1,price:79.8}]}";
- 		assertEquals(expected, report.getAsString());
- 	}
-@@ -47,7 +49,7 @@ public class ReportAssemblerTest {
- 		ReportAssembler assembler = new ReportAssembler();
- 
- 		assembler.setSaleEntry(createDummySaleEntry());
+@@ -50 +52 @@ public class ReportAssemblerTest {
 -		Report report = assembler.getReport("XML");
 +		Report report = assembler.getReport(new XMLReportBodyBuilder());
- 		String expected = "<sale><customer><name>Bob</name><phone>1232232</phone></customer><items><item><name>Computer</name><quantity>2</quantity><price>99.9</price></item><item><name>Printer</name><quantity>1</quantity><price>79.8</price></item></items></sale>";
- 
- 		assertEquals(expected, report.getAsString());
-@@ -60,7 +62,7 @@ public class ReportAssemblerTest {
- 		ReportAssembler assembler = new ReportAssembler();
- 
- 		assembler.setSaleEntry(createDummySaleEntry());
+@@ -63 +65 @@ public class ReportAssemblerTest {
 -		Report report = assembler.getReport("HTML");
 +		Report report = assembler.getReport(new HTMLReportBodyBuilder());
- 		String expected = "<span class=\"customerName\">Bob</span><span class=\"customerPhone\">1232232</span><items><item><name>Computer</name><quantity>2</quantity><price>99.9</price></item><item><name>Printer</name><quantity>1</quantity><price>79.8</price></item></items>";
- 
- 		assertEquals(expected, report.getAsString());

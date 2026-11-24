@@ -2,32 +2,19 @@ diff --git a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpa
 index daeb724..494749f 100644
 --- a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/Report.java
 +++ b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/Report.java
-@@ -15,12 +15,6 @@
-  */
- package eu.jpereira.trainings.designpatterns.creational.abstractfactory;
- 
+@@ -18,6 +17,0 @@ package eu.jpereira.trainings.designpatterns.creational.abstractfactory;
 -import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportBody;
 -import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportFooter;
 -import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportHeader;
 -import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportBody;
 -import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportFooter;
 -import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportHeader;
- 
- public class Report {
- 
-@@ -28,26 +22,17 @@ public class Report {
- 	private ReportBody body;
- 	private ReportFooter footer;
- 	private ReportHeader header;
+@@ -31 +24,0 @@ public class Report {
 -	private String reportType;
- 	
- 
- 	
- 	
- 	/**
+@@ -37 +30 @@ public class Report {
 -	 * @param string
 +	 * @param factory creates the header, body and footer of one format
- 	 */
+@@ -39,12 +32,4 @@ public class Report {
 -	public Report(String string) {
 -		this.reportType = string;
 -		if ( reportType.equals("JSON")) {
@@ -44,9 +31,6 @@ index daeb724..494749f 100644
 +		this.setHeader(factory.createHeader());
 +		this.setBody(factory.createBody());
 +		this.setFooter(factory.createFooter());
- 	}
- 
- 
 diff --git a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportFactory.java b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportFactory.java
 new file mode 100644
 index 0000000..d0e3b8f
@@ -130,30 +114,12 @@ diff --git a/lista3/abstractfactory/src/test/java/eu/jpereira/trainings/designpa
 index 8a63f0f..7096ee5 100644
 --- a/lista3/abstractfactory/src/test/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportTest.java
 +++ b/lista3/abstractfactory/src/test/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportTest.java
-@@ -16,6 +16,8 @@
- package eu.jpereira.trainings.designpatterns.creational.abstractfactory;
- 
- import org.junit.Test;
+@@ -18,0 +19,2 @@ import org.junit.Test;
 +import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportFactory;
 +import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportFactory;
- 
- import eu.jpereira.trainings.designpatterns.creational.abstractfactory.Report;
- 
-@@ -31,7 +33,7 @@ public class ReportTest {
- 	@Test
- 	public void testCreateJSONReport() {
- 
+@@ -34 +36 @@ public class ReportTest {
 -		Report report = new Report("JSON");
 +		Report report = new Report(new JSONReportFactory());
- 		assertEquals("JSON", report.getBody().getType());
- 		assertEquals("JSON", report.getHeader().getType());
- 		assertEquals("JSON", report.getFooter().getType());
-@@ -41,7 +43,7 @@ public class ReportTest {
- 	@Test
- 	public void testCreateXMLReport() {
- 
+@@ -44 +46 @@ public class ReportTest {
 -		Report report = new Report("XML");
 +		Report report = new Report(new XMLReportFactory());
- 		assertEquals("XML", report.getBody().getType());
- 		assertEquals("XML", report.getHeader().getType());
- 		assertEquals("XML", report.getFooter().getType());

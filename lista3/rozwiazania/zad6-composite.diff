@@ -2,68 +2,33 @@ diff --git a/lista3/composite/src/main/java/eu/jpereira/trainings/designpatterns
 index 7338bd8..f000c76 100644
 --- a/lista3/composite/src/main/java/eu/jpereira/trainings/designpatterns/structural/composite/model/CompositeShape.java
 +++ b/lista3/composite/src/main/java/eu/jpereira/trainings/designpatterns/structural/composite/model/CompositeShape.java
-@@ -15,6 +15,7 @@
-  */
- package eu.jpereira.trainings.designpatterns.structural.composite.model;
- 
+@@ -17,0 +18 @@ package eu.jpereira.trainings.designpatterns.structural.composite.model;
 +import java.util.ArrayList;
- import java.util.List;
- 
- 
-@@ -30,6 +31,11 @@ public abstract class CompositeShape extends Shape {
- 		this.shapes = createShapesList();
- 	}
- 
+@@ -32,0 +34,5 @@ public abstract class CompositeShape extends Shape {
 +	@Override
 +	public CompositeShape asComposite() {
 +		return this;
 +	}
 +
- 	/**
- 	 * Remove a shape from this shape childrens
- 	 * 
-@@ -39,9 +45,7 @@ public abstract class CompositeShape extends Shape {
- 	 *         was not present
- 	 */
- 	public boolean removeShape(Shape shape) {
+@@ -42,3 +48 @@ public abstract class CompositeShape extends Shape {
 -		// TODO: implement
 -		return false;
 -
 +		return shapes.remove(shape);
- 	}
- 
- 	/**
-@@ -50,9 +54,7 @@ public abstract class CompositeShape extends Shape {
- 	 * @return the total count of shapes if the shape is composite. -1 otherwise
- 	 */
- 	public int getShapeCount() {
+@@ -53,3 +57 @@ public abstract class CompositeShape extends Shape {
 -		// TODO: implement
 -		return 0;
 -
 +		return shapes.size();
- 	}
- 
- 	/**
-@@ -64,13 +66,11 @@ public abstract class CompositeShape extends Shape {
- 	 *             if this shape is not a composite
- 	 */
- 	public void addShape(Shape shape) {
+@@ -67 +69 @@ public abstract class CompositeShape extends Shape {
 -		// TODO: Implement
 +		shapes.add(shape);
- 	}
- 
- 	public List<Shape> getShapes() {
+@@ -71,3 +73 @@ public abstract class CompositeShape extends Shape {
 -		// TODO: Implement
 -		return null;
 -
 +		return shapes;
- 	}
- 
- 	/**
-@@ -78,8 +78,13 @@ public abstract class CompositeShape extends Shape {
- 	 * @return
- 	 */
- 	public List<Shape> getShapesByType(ShapeType circle) {
+@@ -81,2 +81,7 @@ public abstract class CompositeShape extends Shape {
 -		return null;
 -		// TODO: Implement
 +		List<Shape> result = new ArrayList<Shape>();
@@ -73,13 +38,7 @@ index 7338bd8..f000c76 100644
 +			}
 +		}
 +		return result;
- 	}
- 
- 	/**
-@@ -88,8 +93,16 @@ public abstract class CompositeShape extends Shape {
- 	 * @return
- 	 */
- 	public List<Shape> getLeafShapes() {
+@@ -91,2 +96,10 @@ public abstract class CompositeShape extends Shape {
 -		// TODO: Implement
 -		return null;
 +		List<Shape> leafs = new ArrayList<Shape>();
@@ -92,34 +51,17 @@ index 7338bd8..f000c76 100644
 +			}
 +		}
 +		return leafs;
- 	}
- 
- 	/**
-@@ -98,7 +111,6 @@ public abstract class CompositeShape extends Shape {
- 	 * @return
- 	 */
- 	protected List<Shape> createShapesList() {
+@@ -101,2 +114 @@ public abstract class CompositeShape extends Shape {
 -		return null;
 -		// TODO: Implement
 +		return new ArrayList<Shape>();
- 	}
- }
 diff --git a/lista3/composite/src/main/java/eu/jpereira/trainings/designpatterns/structural/composite/model/Shape.java b/lista3/composite/src/main/java/eu/jpereira/trainings/designpatterns/structural/composite/model/Shape.java
 index caf05c2..eaa3ef0 100644
 --- a/lista3/composite/src/main/java/eu/jpereira/trainings/designpatterns/structural/composite/model/Shape.java
 +++ b/lista3/composite/src/main/java/eu/jpereira/trainings/designpatterns/structural/composite/model/Shape.java
-@@ -32,7 +32,6 @@ public abstract class Shape {
- 	 *         otherwise
- 	 */
- 	public CompositeShape asComposite() {
+@@ -35 +34,0 @@ public abstract class Shape {
 -		//TODO: Implement
- 		return null;
- 	}
- 
-@@ -48,7 +47,12 @@ public abstract class Shape {
- 		this.x += xIncrement;
- 		this.y += yIncrement;
- 		// if is composite, delegate to children
+@@ -51 +50,6 @@ public abstract class Shape {
 -		//TODO: COmplete
 +		CompositeShape composite = asComposite();
 +		if (composite != null) {
@@ -127,6 +69,3 @@ index caf05c2..eaa3ef0 100644
 +				child.move(xIncrement, yIncrement);
 +			}
 +		}
- 	}
- 
- 	/**

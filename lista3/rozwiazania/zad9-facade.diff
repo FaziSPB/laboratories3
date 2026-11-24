@@ -60,18 +60,9 @@ diff --git a/lista3/facade/src/test/java/eu/jpereira/trainings/designpatterns/st
 index f45eca6..9382d6a 100644
 --- a/lista3/facade/src/test/java/eu/jpereira/trainings/designpatterns/structural/facade/facade/BookStoreFacadeTest.java
 +++ b/lista3/facade/src/test/java/eu/jpereira/trainings/designpatterns/structural/facade/facade/BookStoreFacadeTest.java
-@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
- import org.junit.Test;
- 
- import eu.jpereira.trainings.designpatterns.structural.facade.BookstoreFacade;
+@@ -22,0 +23 @@ import eu.jpereira.trainings.designpatterns.structural.facade.BookstoreFacade;
 +import eu.jpereira.trainings.designpatterns.structural.facade.DefaultBooktoreFacade;
- import eu.jpereira.trainings.designpatterns.structural.facade.model.Book;
- import eu.jpereira.trainings.designpatterns.structural.facade.model.Customer;
- import eu.jpereira.trainings.designpatterns.structural.facade.model.DispatchReceipt;
-@@ -63,14 +64,12 @@ public class BookStoreFacadeTest extends AbstractClientTest {
- 	 * @return
- 	 */
- 	protected BookstoreFacade createFacade() {
+@@ -66,9 +67,7 @@ public class BookStoreFacadeTest extends AbstractClientTest {
 -		// TODO: Implement the interface bookstoreFacade and set the
 -		// dependencies. We're using mocks, so you'll have to set the mocks as
 -		// dependencies of the facade
@@ -88,5 +79,3 @@ index f45eca6..9382d6a 100644
 +		impl.setWarehouseService(warehouseService);
 +		impl.setCustomerNotificationService(customerNotificationService);
 +		return impl;
- 	}
- }

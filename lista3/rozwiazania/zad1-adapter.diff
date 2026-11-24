@@ -172,40 +172,23 @@ diff --git a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/s
 index 0899f3c..0ab146d 100644
 --- a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyAdapterTest.java
 +++ b/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyAdapterTest.java
-@@ -29,14 +29,12 @@ public class ThirdPartyAdapterTest extends DoorTest {
- 
- 	@Override
- 	protected Door createDoorUnderTest() {
+@@ -32,2 +32 @@ public class ThirdPartyAdapterTest extends DoorTest {
 -		return new SimpleDoor();
 -		//return new ThirdPartyDoorAdaper();
 +		return new ThirdPartyDoorAdaper();
- 	}
- 
- 	@Override
- 	protected String getDefaultDoorCode() {
+@@ -38,2 +37 @@ public class ThirdPartyAdapterTest extends DoorTest {
 -		return SimpleDoor.DEFAULT_DOOR_CODE;
 -		//return ThirdPartyDoor.DEFAULT_CODE;
 +		return ThirdPartyDoor.DEFAULT_CODE;
- 	}
- 
- }
 diff --git a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java b/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java
 index e87107f..dadf2d6 100644
 --- a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java
 +++ b/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java
-@@ -26,13 +26,11 @@ import eu.jpereira.trainings.designpatterns.structural.adapter.model.SimpleDoor;
- public class ThirdPartyDoorObjectAdapterTest extends DoorTest{
- 	@Override
- 	protected Door createDoorUnderTest() {
+@@ -29,2 +29 @@ public class ThirdPartyDoorObjectAdapterTest extends DoorTest{
 -		return new SimpleDoor();
 -		//return new ThirdPartyDoorObjectAdapter();
 +		return new ThirdPartyDoorObjectAdapter();
- 	}
- 
- 	@Override
- 	protected String getDefaultDoorCode() {
+@@ -35,2 +34 @@ public class ThirdPartyDoorObjectAdapterTest extends DoorTest{
 -		return SimpleDoor.DEFAULT_DOOR_CODE;
 -		//return ThirdPartyDoor.DEFAULT_CODE;
 +		return ThirdPartyDoor.DEFAULT_CODE;
- 	}
- }
