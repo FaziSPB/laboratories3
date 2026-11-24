@@ -18,15 +18,17 @@ iterator 7.
 
 ## Code changes
 
-The original sources (with the `pom.xml` fix already applied) are staged in git. Edits on top
-of them are unstaged, and new classes are untracked:
+Commit `678a393` holds the original sources (with the `pom.xml` fix already applied),
+commit `a5125a0` holds the solutions. List of changed files:
 
 ```bash
-git diff -- lista3
+git show a5125a0 --stat
 ```
 
+Full diff:
+
 ```bash
-git status --short -- lista3
+git diff 678a393 a5125a0 -- lista3
 ```
 
 ## Tasks
