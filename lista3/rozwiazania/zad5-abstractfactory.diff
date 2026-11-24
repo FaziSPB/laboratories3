@@ -1,0 +1,159 @@
+diff --git a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/Report.java b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/Report.java
+index daeb724..494749f 100644
+--- a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/Report.java
++++ b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/Report.java
+@@ -15,12 +15,6 @@
+  */
+ package eu.jpereira.trainings.designpatterns.creational.abstractfactory;
+ 
+-import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportBody;
+-import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportFooter;
+-import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportHeader;
+-import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportBody;
+-import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportFooter;
+-import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportHeader;
+ 
+ public class Report {
+ 
+@@ -28,26 +22,17 @@ public class Report {
+ 	private ReportBody body;
+ 	private ReportFooter footer;
+ 	private ReportHeader header;
+-	private String reportType;
+ 	
+ 
+ 	
+ 	
+ 	/**
+-	 * @param string
++	 * @param factory creates the header, body and footer of one format
+ 	 */
+-	public Report(String string) {
+-		this.reportType = string;
+-		if ( reportType.equals("JSON")) {
+-			//to compose Report with JSON objects
+-			this.setBody(new JSONReportBody());
+-			this.setFooter(new JSONReportFooter());
+-			this.setHeader(new JSONReportHeader());
+-		} else {
+-			this.setFooter(new XMLReportFooter());
+-			this.setHeader(new XMLReportHeader());
+-			this.setBody(new XMLReportBody());
+-		}
++	public Report(ReportFactory factory) {
++		this.setHeader(factory.createHeader());
++		this.setBody(factory.createBody());
++		this.setFooter(factory.createFooter());
+ 	}
+ 
+ 
+diff --git a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportFactory.java b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportFactory.java
+new file mode 100644
+index 0000000..d0e3b8f
+--- /dev/null
++++ b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportFactory.java
+@@ -0,0 +1,13 @@
++package eu.jpereira.trainings.designpatterns.creational.abstractfactory;
++
++/**
++ * Abstract factory for a family of matching report elements.
++ */
++public interface ReportFactory {
++
++	ReportHeader createHeader();
++
++	ReportBody createBody();
++
++	ReportFooter createFooter();
++}
+diff --git a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/json/JSONReportFactory.java b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/json/JSONReportFactory.java
+new file mode 100644
+index 0000000..3042e22
+--- /dev/null
++++ b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/json/JSONReportFactory.java
+@@ -0,0 +1,24 @@
++package eu.jpereira.trainings.designpatterns.creational.abstractfactory.json;
++
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportBody;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportFactory;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportFooter;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportHeader;
++
++public class JSONReportFactory implements ReportFactory {
++
++	@Override
++	public ReportHeader createHeader() {
++		return new JSONReportHeader();
++	}
++
++	@Override
++	public ReportBody createBody() {
++		return new JSONReportBody();
++	}
++
++	@Override
++	public ReportFooter createFooter() {
++		return new JSONReportFooter();
++	}
++}
+diff --git a/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/xml/XMLReportFactory.java b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/xml/XMLReportFactory.java
+new file mode 100644
+index 0000000..c2f2a7d
+--- /dev/null
++++ b/lista3/abstractfactory/src/main/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/xml/XMLReportFactory.java
+@@ -0,0 +1,24 @@
++package eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml;
++
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportBody;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportFactory;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportFooter;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.ReportHeader;
++
++public class XMLReportFactory implements ReportFactory {
++
++	@Override
++	public ReportHeader createHeader() {
++		return new XMLReportHeader();
++	}
++
++	@Override
++	public ReportBody createBody() {
++		return new XMLReportBody();
++	}
++
++	@Override
++	public ReportFooter createFooter() {
++		return new XMLReportFooter();
++	}
++}
+diff --git a/lista3/abstractfactory/src/test/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportTest.java b/lista3/abstractfactory/src/test/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportTest.java
+index 8a63f0f..7096ee5 100644
+--- a/lista3/abstractfactory/src/test/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportTest.java
++++ b/lista3/abstractfactory/src/test/java/eu/jpereira/trainings/designpatterns/creational/abstractfactory/ReportTest.java
+@@ -16,6 +16,8 @@
+ package eu.jpereira.trainings.designpatterns.creational.abstractfactory;
+ 
+ import org.junit.Test;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.json.JSONReportFactory;
++import eu.jpereira.trainings.designpatterns.creational.abstractfactory.xml.XMLReportFactory;
+ 
+ import eu.jpereira.trainings.designpatterns.creational.abstractfactory.Report;
+ 
+@@ -31,7 +33,7 @@ public class ReportTest {
+ 	@Test
+ 	public void testCreateJSONReport() {
+ 
+-		Report report = new Report("JSON");
++		Report report = new Report(new JSONReportFactory());
+ 		assertEquals("JSON", report.getBody().getType());
+ 		assertEquals("JSON", report.getHeader().getType());
+ 		assertEquals("JSON", report.getFooter().getType());
+@@ -41,7 +43,7 @@ public class ReportTest {
+ 	@Test
+ 	public void testCreateXMLReport() {
+ 
+-		Report report = new Report("XML");
++		Report report = new Report(new XMLReportFactory());
+ 		assertEquals("XML", report.getBody().getType());
+ 		assertEquals("XML", report.getHeader().getType());
+ 		assertEquals("XML", report.getFooter().getType());

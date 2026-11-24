@@ -1,0 +1,211 @@
+diff --git a/lista3/adapter/src/main/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorAdaper.java b/lista3/adapter/src/main/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorAdaper.java
+new file mode 100644
+index 0000000..e902465
+--- /dev/null
++++ b/lista3/adapter/src/main/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorAdaper.java
+@@ -0,0 +1,78 @@
++package eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty;
++
++import eu.jpereira.trainings.designpatterns.structural.adapter.exceptions.CodeMismatchException;
++import eu.jpereira.trainings.designpatterns.structural.adapter.exceptions.IncorrectDoorCodeException;
++import eu.jpereira.trainings.designpatterns.structural.adapter.model.Door;
++import eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty.exceptions.CannotChangeCodeForUnlockedDoor;
++import eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty.exceptions.CannotChangeStateOfLockedDoor;
++import eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty.exceptions.CannotUnlockDoorException;
++
++/**
++ * Class adapter: inherits ThirdPartyDoor and exposes it as a Door.
++ */
++public class ThirdPartyDoorAdaper extends ThirdPartyDoor implements Door {
++
++	@Override
++	public void open(String code) throws IncorrectDoorCodeException {
++		try {
++			unlock(code);
++			setState(DoorState.OPEN);
++		} catch (CannotUnlockDoorException e) {
++			throw new IncorrectDoorCodeException(e);
++		} catch (CannotChangeStateOfLockedDoor e) {
++			throw new IllegalStateException(e);
++		}
++	}
++
++	@Override
++	public void close() {
++		try {
++			setState(DoorState.CLOSED);
++			lock();
++		} catch (CannotChangeStateOfLockedDoor e) {
++			// a locked door is already closed
++		}
++	}
++
++	@Override
++	public boolean isOpen() {
++		return getState() == DoorState.OPEN;
++	}
++
++	@Override
++	public void changeCode(String oldCode, String newCode, String newCodeConfirmation)
++			throws IncorrectDoorCodeException, CodeMismatchException {
++		LockStatus before = getLockStatus();
++		try {
++			unlock(oldCode);
++		} catch (CannotUnlockDoorException e) {
++			throw new IncorrectDoorCodeException(e);
++		}
++		try {
++			if (!newCode.equals(newCodeConfirmation)) {
++				throw new CodeMismatchException();
++			}
++			setNewLockCode(newCode);
++		} catch (CannotChangeCodeForUnlockedDoor e) {
++			throw new IllegalStateException(e);
++		} finally {
++			if (before == LockStatus.LOCKED) {
++				lock();
++			}
++		}
++	}
++
++	@Override
++	public boolean testCode(String code) {
++		LockStatus before = getLockStatus();
++		try {
++			unlock(code);
++		} catch (CannotUnlockDoorException e) {
++			return false;
++		}
++		if (before == LockStatus.LOCKED) {
++			lock();
++		}
++		return true;
++	}
++}
+diff --git a/lista3/adapter/src/main/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapter.java b/lista3/adapter/src/main/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapter.java
+new file mode 100644
+index 0000000..c8409b6
+--- /dev/null
++++ b/lista3/adapter/src/main/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapter.java
+@@ -0,0 +1,80 @@
++package eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty;
++
++import eu.jpereira.trainings.designpatterns.structural.adapter.exceptions.CodeMismatchException;
++import eu.jpereira.trainings.designpatterns.structural.adapter.exceptions.IncorrectDoorCodeException;
++import eu.jpereira.trainings.designpatterns.structural.adapter.model.Door;
++import eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty.exceptions.CannotChangeCodeForUnlockedDoor;
++import eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty.exceptions.CannotChangeStateOfLockedDoor;
++import eu.jpereira.trainings.designpatterns.structural.adapter.thirdparty.exceptions.CannotUnlockDoorException;
++
++/**
++ * Object adapter: wraps a ThirdPartyDoor instance and delegates to it.
++ */
++public class ThirdPartyDoorObjectAdapter implements Door {
++
++	private final ThirdPartyDoor door = new ThirdPartyDoor();
++
++	@Override
++	public void open(String code) throws IncorrectDoorCodeException {
++		try {
++			door.unlock(code);
++			door.setState(ThirdPartyDoor.DoorState.OPEN);
++		} catch (CannotUnlockDoorException e) {
++			throw new IncorrectDoorCodeException(e);
++		} catch (CannotChangeStateOfLockedDoor e) {
++			throw new IllegalStateException(e);
++		}
++	}
++
++	@Override
++	public void close() {
++		try {
++			door.setState(ThirdPartyDoor.DoorState.CLOSED);
++			door.lock();
++		} catch (CannotChangeStateOfLockedDoor e) {
++			// a locked door is already closed
++		}
++	}
++
++	@Override
++	public boolean isOpen() {
++		return door.getState() == ThirdPartyDoor.DoorState.OPEN;
++	}
++
++	@Override
++	public void changeCode(String oldCode, String newCode, String newCodeConfirmation)
++			throws IncorrectDoorCodeException, CodeMismatchException {
++		ThirdPartyDoor.LockStatus before = door.getLockStatus();
++		try {
++			door.unlock(oldCode);
++		} catch (CannotUnlockDoorException e) {
++			throw new IncorrectDoorCodeException(e);
++		}
++		try {
++			if (!newCode.equals(newCodeConfirmation)) {
++				throw new CodeMismatchException();
++			}
++			door.setNewLockCode(newCode);
++		} catch (CannotChangeCodeForUnlockedDoor e) {
++			throw new IllegalStateException(e);
++		} finally {
++			if (before == ThirdPartyDoor.LockStatus.LOCKED) {
++				door.lock();
++			}
++		}
++	}
++
++	@Override
++	public boolean testCode(String code) {
++		ThirdPartyDoor.LockStatus before = door.getLockStatus();
++		try {
++			door.unlock(code);
++		} catch (CannotUnlockDoorException e) {
++			return false;
++		}
++		if (before == ThirdPartyDoor.LockStatus.LOCKED) {
++			door.lock();
++		}
++		return true;
++	}
++}
+diff --git a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyAdapterTest.java b/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyAdapterTest.java
+index 0899f3c..0ab146d 100644
+--- a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyAdapterTest.java
++++ b/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyAdapterTest.java
+@@ -29,14 +29,12 @@ public class ThirdPartyAdapterTest extends DoorTest {
+ 
+ 	@Override
+ 	protected Door createDoorUnderTest() {
+-		return new SimpleDoor();
+-		//return new ThirdPartyDoorAdaper();
++		return new ThirdPartyDoorAdaper();
+ 	}
+ 
+ 	@Override
+ 	protected String getDefaultDoorCode() {
+-		return SimpleDoor.DEFAULT_DOOR_CODE;
+-		//return ThirdPartyDoor.DEFAULT_CODE;
++		return ThirdPartyDoor.DEFAULT_CODE;
+ 	}
+ 
+ }
+diff --git a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java b/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java
+index e87107f..dadf2d6 100644
+--- a/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java
++++ b/lista3/adapter/src/test/java/eu/jpereira/trainings/designpatterns/structural/adapter/thirdparty/ThirdPartyDoorObjectAdapterTest.java
+@@ -26,13 +26,11 @@ import eu.jpereira.trainings.designpatterns.structural.adapter.model.SimpleDoor;
+ public class ThirdPartyDoorObjectAdapterTest extends DoorTest{
+ 	@Override
+ 	protected Door createDoorUnderTest() {
+-		return new SimpleDoor();
+-		//return new ThirdPartyDoorObjectAdapter();
++		return new ThirdPartyDoorObjectAdapter();
+ 	}
+ 
+ 	@Override
+ 	protected String getDefaultDoorCode() {
+-		return SimpleDoor.DEFAULT_DOOR_CODE;
+-		//return ThirdPartyDoor.DEFAULT_CODE;
++		return ThirdPartyDoor.DEFAULT_CODE;
+ 	}
+ }

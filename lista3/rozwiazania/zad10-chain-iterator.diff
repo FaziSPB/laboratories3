@@ -1,0 +1,224 @@
+diff --git a/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/IntegrationTest.java b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/IntegrationTest.java
+index 2717ce3..004c77d 100644
+--- a/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/IntegrationTest.java
++++ b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/IntegrationTest.java
+@@ -27,6 +27,9 @@ import javax.servlet.ServletResponse;
+ 
+ import org.junit.Test;
+ 
++import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeAuthorizationFilter;
++import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeFormatFilter;
++import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeLoggingFilter;
+ import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeFilterChain;
+ import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeServlet;
+ import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeServletOutputStream;
+@@ -93,7 +96,6 @@ public class IntegrationTest {
+ 		filterChain.doFilter(request, response);
+ 
+ 		FakeServletOutputStream fakeOut = (FakeServletOutputStream) response.getOutputStream();
+-		//TODO: you must override the method doFilter in FakeLoggingFilter
+ 		assertEquals("Logging: Hello Joao", fakeOut.getStringBuilder().toString());
+ 
+ 	}
+@@ -124,7 +126,6 @@ public class IntegrationTest {
+ 		filterChain.doFilter(request, response);
+ 
+ 		FakeServletOutputStream fakeOut = (FakeServletOutputStream) response.getOutputStream();
+-		//TODO: you must override the method doFilter in FakeAuthorizationFilter
+ 		assertEquals("Authorized: Hello Joao", fakeOut.getStringBuilder().toString());
+ 
+ 	}
+@@ -157,7 +158,6 @@ public class IntegrationTest {
+ 		FakeServletOutputStream fakeOut = (FakeServletOutputStream) response.getOutputStream();
+ 
+ 		
+-		//TODO: you must override the method doFilter in FakeFormatFilter
+ 		assertEquals("Hello Joao :Formated", fakeOut.getStringBuilder().toString());
+ 	}
+ 
+@@ -210,34 +210,21 @@ public class IntegrationTest {
+ 	 * @return
+ 	 */
+ 	private Filter createAuthorizationFilter() {
+-		return null;
+-		// TODO: Implement FakeAuthorizationFilter that extends from
+-		// AbstractFilter and return a new instance of that type.
+-		// Uncomment the following line and create the filter.
+-
+-		// return new FakeAuthorizationFilter();
++		return new FakeAuthorizationFilter();
+ 	}
+ 
+ 	/**
+ 	 * @return
+ 	 */
+ 	private Filter createFormatFilter() {
+-		return null;
+-		// TODO: Implement FakeFormatFilter that extends from AbstractFilter and
+-		// return a new instance of that type.
+-		// Uncomment the following line and create the filter.
+-		// return new FakeFormatFilter();
++		return new FakeFormatFilter();
+ 	}
+ 
+ 	/**
+ 	 * @return
+ 	 */
+ 	private Filter createLogginFilter() {
+-		return null;
+-		// TODO: Implement FakeLoggingFilter that extends from AbstractFilter
+-		// and return a new instance of that type.
+-		// Uncomment the following line and create the filter.
+-		// return new FakeLoggingFilter();
++		return new FakeLoggingFilter();
+ 	}
+ 
+ 	/**
+diff --git a/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeAuthorizationFilter.java b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeAuthorizationFilter.java
+new file mode 100644
+index 0000000..b5bc20e
+--- /dev/null
++++ b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeAuthorizationFilter.java
+@@ -0,0 +1,19 @@
++package eu.jpereira.trainings.designpatterns.behavioral.chain.fakes;
++
++import java.io.IOException;
++
++import javax.servlet.FilterChain;
++import javax.servlet.ServletException;
++import javax.servlet.ServletRequest;
++import javax.servlet.ServletResponse;
++
++import eu.jpereira.trainings.designpatterns.behavioral.chain.filter.AbstractFilter;
++
++public class FakeAuthorizationFilter extends AbstractFilter {
++
++	@Override
++	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
++		response.getOutputStream().print("Authorized: ");
++		chain.doFilter(request, response);
++	}
++}
+diff --git a/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeFormatFilter.java b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeFormatFilter.java
+new file mode 100644
+index 0000000..0095c21
+--- /dev/null
++++ b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeFormatFilter.java
+@@ -0,0 +1,19 @@
++package eu.jpereira.trainings.designpatterns.behavioral.chain.fakes;
++
++import java.io.IOException;
++
++import javax.servlet.FilterChain;
++import javax.servlet.ServletException;
++import javax.servlet.ServletRequest;
++import javax.servlet.ServletResponse;
++
++import eu.jpereira.trainings.designpatterns.behavioral.chain.filter.AbstractFilter;
++
++public class FakeFormatFilter extends AbstractFilter {
++
++	@Override
++	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
++		chain.doFilter(request, response);
++		response.getOutputStream().print(" :Formated");
++	}
++}
+diff --git a/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeLoggingFilter.java b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeLoggingFilter.java
+new file mode 100644
+index 0000000..f436515
+--- /dev/null
++++ b/lista3/chainofresponsability/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/chain/fakes/FakeLoggingFilter.java
+@@ -0,0 +1,19 @@
++package eu.jpereira.trainings.designpatterns.behavioral.chain.fakes;
++
++import java.io.IOException;
++
++import javax.servlet.FilterChain;
++import javax.servlet.ServletException;
++import javax.servlet.ServletRequest;
++import javax.servlet.ServletResponse;
++
++import eu.jpereira.trainings.designpatterns.behavioral.chain.filter.AbstractFilter;
++
++public class FakeLoggingFilter extends AbstractFilter {
++
++	@Override
++	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
++		response.getOutputStream().print("Logging: ");
++		chain.doFilter(request, response);
++	}
++}
+diff --git a/lista3/iterator/src/main/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/command/model/CommandJob.java b/lista3/iterator/src/main/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/command/model/CommandJob.java
+index 96b0a0c..5c2aa06 100644
+--- a/lista3/iterator/src/main/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/command/model/CommandJob.java
++++ b/lista3/iterator/src/main/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/command/model/CommandJob.java
+@@ -18,6 +18,7 @@ package eu.jpereira.trainings.designpatterns.behavioral.iterator.command.model;
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.Collections;
++import java.util.Iterator;
+ import java.util.List;
+ 
+ import eu.jpereira.trainings.designpatterns.behavioral.iterator.command.model.exceptions.CouldNotConnectException;
+@@ -30,8 +31,7 @@ import eu.jpereira.trainings.designpatterns.behavioral.iterator.command.model.re
+  * 
+  */
+ 
+-//TODO: EXERCISE implement Iterable<Command> and implement the method iterator()
+-public class CommandJob implements Command{
++public class CommandJob implements Command, Iterable<Command> {
+ 
+ 	private List<Command> commands;
+ 
+@@ -52,6 +52,11 @@ public class CommandJob implements Command{
+ 		this.commands.add(command);
+ 	}
+ 
++	@Override
++	public Iterator<Command> iterator() {
++		return getCommands().iterator();
++	}
++
+ 	/**
+ 	 * Get an umodifiable collection of commands
+ 	 * 
+diff --git a/lista3/iterator/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/CommandJobIteratorTest.java b/lista3/iterator/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/CommandJobIteratorTest.java
+index a5a398c..ba114c9 100644
+--- a/lista3/iterator/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/CommandJobIteratorTest.java
++++ b/lista3/iterator/src/test/java/eu/jpereira/trainings/designpatterns/behavioral/iterator/CommandJobIteratorTest.java
+@@ -16,8 +16,11 @@
+ package eu.jpereira.trainings.designpatterns.behavioral.iterator;
+ 
+ import static org.junit.Assert.assertEquals;
++import static org.junit.Assert.assertNotNull;
+ import static org.mockito.Mockito.mock;
+ 
++import java.util.Iterator;
++
+ import org.junit.Test;
+ 
+ import eu.jpereira.trainings.designpatterns.behavioral.iterator.command.model.Command;
+@@ -34,18 +37,14 @@ public class CommandJobIteratorTest {
+ 	public void testIterator() {
+ 		CommandJob job = createCommandJob();
+ 		
+-		//TODO: EXERCISE uncomment. Go to CommandJob and complete the TODOs
+-		//assertNotNull(job.iterator());
+-		//TODO: EXERCISE uncomment
+-		//Iterator<Command> it = job.iterator();
++		assertNotNull(job.iterator());
++		Iterator<Command> it = job.iterator();
+ 		int count = 0;
+ 		//Iterate 
+-		//TODO: EXERCISE Iterate over the iterator returned from job.iterator()
+-		
+-		/*while ( it.hasNext() ) {
++		while ( it.hasNext() ) {
+ 			count++;
+ 			Command command = it.next();
+-		}*/
++		}
+ 		assertEquals(3, count);
+ 	}
+ 
