@@ -27,8 +27,7 @@ public class StartedState implements ApplianceStateBehavior {
 	 */
 	@Override
 	public ApplianceState getState() {
-		//TODO: Return the correct ApplianceState
-		return null;
+		return ApplianceState.STARTED;
 	}
 
 	/* (non-Javadoc)

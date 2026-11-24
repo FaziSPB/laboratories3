@@ -27,6 +27,9 @@ import javax.servlet.ServletResponse;
 
 import org.junit.Test;
 
+import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeAuthorizationFilter;
+import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeFormatFilter;
+import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeLoggingFilter;
 import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeFilterChain;
 import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeServlet;
 import eu.jpereira.trainings.designpatterns.behavioral.chain.fakes.FakeServletOutputStream;
@@ -93,7 +96,6 @@ public class IntegrationTest {
 		filterChain.doFilter(request, response);
 
 		FakeServletOutputStream fakeOut = (FakeServletOutputStream) response.getOutputStream();
-		//TODO: you must override the method doFilter in FakeLoggingFilter
 		assertEquals("Logging: Hello Joao", fakeOut.getStringBuilder().toString());
 
 	}
@@ -124,7 +126,6 @@ public class IntegrationTest {
 		filterChain.doFilter(request, response);
 
 		FakeServletOutputStream fakeOut = (FakeServletOutputStream) response.getOutputStream();
-		//TODO: you must override the method doFilter in FakeAuthorizationFilter
 		assertEquals("Authorized: Hello Joao", fakeOut.getStringBuilder().toString());
 
 	}
@@ -157,7 +158,6 @@ public class IntegrationTest {
 		FakeServletOutputStream fakeOut = (FakeServletOutputStream) response.getOutputStream();
 
 		
-		//TODO: you must override the method doFilter in FakeFormatFilter
 		assertEquals("Hello Joao :Formated", fakeOut.getStringBuilder().toString());
 	}
 
@@ -210,34 +210,21 @@ public class IntegrationTest {
 	 * @return
 	 */
 	private Filter createAuthorizationFilter() {
-		return null;
-		// TODO: Implement FakeAuthorizationFilter that extends from
-		// AbstractFilter and return a new instance of that type.
-		// Uncomment the following line and create the filter.
-
-		// return new FakeAuthorizationFilter();
+		return new FakeAuthorizationFilter();
 	}
 
 	/**
 	 * @return
 	 */
 	private Filter createFormatFilter() {
-		return null;
-		// TODO: Implement FakeFormatFilter that extends from AbstractFilter and
-		// return a new instance of that type.
-		// Uncomment the following line and create the filter.
-		// return new FakeFormatFilter();
+		return new FakeFormatFilter();
 	}
 
 	/**
 	 * @return
 	 */
 	private Filter createLogginFilter() {
-		return null;
-		// TODO: Implement FakeLoggingFilter that extends from AbstractFilter
-		// and return a new instance of that type.
-		// Uncomment the following line and create the filter.
-		// return new FakeLoggingFilter();
+		return new FakeLoggingFilter();
 	}
 
 	/**
